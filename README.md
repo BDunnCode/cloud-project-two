@@ -78,7 +78,7 @@ python3 -m venv ~/.venvs/cloud-scripts
 - Input the command: 
 
 ```bash
-source `/.venvs/cloud-scripts/bin/activate
+source ~/.venvs/cloud-scripts/bin/activate
 ```
 
 ### Install boto3
@@ -158,3 +158,135 @@ if __name__ == "__main__":
 	get_amazon_linux_2_ami()
 ```
 
+Now, in your ubuntu shell type:
+
+```bash
+nano get_ami_latest.py
+```
+
+this will open up the editor in the shell. This command is rather long, so we’re going to make a text file and then just run that text file using python.
+
+Once you’ve got the command pasted into the file using nano, press “Ctrl + X” to exit the editor and make sure to press “Y” when it asks if you’d like to save your changes. 
+
+Run the script using:
+
+```bash
+python3 get_ami_latest.py
+```
+
+Copy the ID, which should resemble: “ami-0ddac208607ae06a0”
+
+If you already had an AMI ID saved from the last project and did that recently, you can also just use that.
+
+Now we’re going to set up an EC2 instance in the Python syntax.
+
+## Creating an EC2 instance using Python and boto3
+
+We’ll now create the EC2 instance using a command that will be listed below. The AMI_ID value is real, but may be old upon the time of reading. The INSTANCE_TYPE is correct, but the other 3 values will need to be adjusted. Insert the proper values for KEY_NAME, SECURITY_GROUP_IDS, and SUBNET_ID.
+
+Type:
+
+```bash
+nano create_ec2_instance.py
+```
+
+to open an empty text file. When we create these files it not only makes it a bit more manageable to see what you’re working with, it also saves the script in your folder for later use.
+
+Paste the following: 
+
+```bash
+import boto3
+
+# Replace these with your real values
+AMI_ID = ‘ami-0ddac208607ae06a0’
+INSTANCE_TYPE = 't2.micro'
+KEY_NAME = ‘key-pair-xx’
+SECURITY_GROUP_IDS = ['sg-123456789']  # Must exist in your VPC
+SUBNET_ID = 'subnet-123456789'   # Must be public if you want external access
+
+
+def launch_instance():
+	ec2 = boto3.client('ec2')
+
+	response = ec2.run_instances(
+    	ImageId=AMI_ID,
+    	InstanceType=INSTANCE_TYPE,
+    	KeyName=KEY_NAME,
+    	MaxCount=1,
+    	MinCount=1,
+    	SecurityGroupIds=SECURITY_GROUP_IDS,
+    	SubnetId=SUBNET_ID,
+    	TagSpecifications=[
+        	{
+            	'ResourceType': 'instance',
+            	'Tags': [
+                	{'Key': 'Name', 'Value': 'Boto3-Launched-Instance'},
+            	]
+        	}
+    	]
+	)
+
+	instance_id = response['Instances'][0]['InstanceId']
+	print(f"Launched instance with ID: {instance_id}")
+
+if __name__ == "__main__":
+	launch_instance()
+```
+
+## Stopping an EC2 instance and creating more reusable scripts 
+
+In the last project, we established that stopping unused resources is critical for cost savings, but stopping unused resources isn’t the only way we can be more efficient. We also reuse resources, and that’s what we’re going to do with the next script. 
+
+We’ll continue using Python and boto3, but we’ll also use another library in addition to boto3, called ‘argparse’.
+
+By using argparse, what we’re doing is allowing dynamic entry of values like: AMI_ID, INSTANCE_TYPE, KEY_NAME, SECURITY_GROUP_IDS, and SUBNET_ID. Instead of hardcoding those values into the text file, you’ll be able to enter them directly at the terminal line as needed. 
+
+In this case, though, the only value for this script will be the INSTANCE_ID.
+
+Just like last time, we’ll use nano to create a text file for the script, type:
+
+```bash
+nano stop_ec2.py
+```
+
+Then paste the following:
+
+```bash
+#!/usr/bin/env python3
+
+import boto3
+import argparse
+
+def stop_instance(instance_id):
+	ec2 = boto3.client('ec2')
+
+	try:
+    	response = ec2.stop_instances(InstanceIds=[instance_id])
+    	current_state = response['StoppingInstances'][0]['CurrentState']['Name']
+    	print(f"Instance {instance_id} is now {current_state}.")
+	except Exception as e:
+    	print(f"Error stopping instance: {e}")
+
+if __name__ == "__main__":
+	parser = argparse.ArgumentParser(description="Stop an EC2 instance by ID")
+	parser.add_argument('--instance-id', required=True, help='The ID of the EC2 instance to stop')
+
+	args = parser.parse_args()
+	stop_instance(args.instance_id)
+```
+
+Now that you have the script saved, you just need to change the permissions to make it executable using:
+
+```bash
+chmod +x stop_ec2.py
+```
+
+Once you’ve done that, you can stop the instance using:
+
+```bash
+./stop_ec2.py --instance-id i-0abcdef1234567890
+```
+
+## Making a management script with multiple actions
+
+Building on what we’ve just done, we can make a singular script, which we’ll call manage_ec2.py, that will allow us to start, stop, or terminate an EC2 instance based on the flags that we put into the command line. 

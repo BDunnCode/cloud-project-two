@@ -504,3 +504,4 @@ You can now use the contents of the manage_ec2.py file to do the following:
 
 *Check logs*:
 cat ec2_manager.log
+

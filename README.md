@@ -30,6 +30,9 @@ It includes the following sections:
 - Visual Studio Code
   - Text and code editing
 
+- Draw.io
+  - Online drawing and diagramming tool
+
 - Python Virtual Environment
 	- Self-contained Python setup
 

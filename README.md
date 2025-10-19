@@ -15,12 +15,28 @@ It includes the following sections:
 
 # 🛠️ Tools Used
 - AWS Console
-- WSL (Window Subsystem for Linux)
-- WSL Ubuntu Bash Shell 
+  - GUI for simple interactions with AWS
+
 - AWS CLI
+  - Granular AWS interactions via terminal
+
+- WSL (Window Subsystem for Linux)
+  - A linux environment nested in Windows 
+
 - Git / Github
+  - Local and online version control and repository
+
 - Visual Studio Code
+  - Text and code editing
+
 - Python Virtual Environment
+	- Self-contained Python setup
+
+# 📜 Network Diagrams
+
+![VPC Visual Diagram](vpc-visual-diagram.png)
+
+![VPC Text Diagram](vpc-text-diagram.png)
 
 # 🔧 Process & Steps
 
@@ -504,4 +520,8 @@ You can now use the contents of the manage_ec2.py file to do the following:
 
 *Check logs*:
 cat ec2_manager.log
+
+# 🤔 Reflections
+
+Recreating the same logic in a different language emphasized the value of abstracting ideas into general systems and using available tools and documentation to implement them efficiently.
 

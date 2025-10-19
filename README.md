@@ -1,4 +1,4 @@
-# 📦 Project Overview
+# 🌄 Project Overview
 
 This project builds off of an AWS built-from-scratch VPC project that can be investigated at either of these links, this will be particularly relevant for things like installing WSL (Windows Subsystem for Linux), AWS CLI configuration, etc.:
 
@@ -13,7 +13,8 @@ It includes the following sections:
 - Post Exercise Reflections
 
 
-# 🛠️ Tools Used
+# ⚙️ Tools & Technologies
+
 - AWS Console
   - GUI for simple interactions with AWS
 
@@ -32,13 +33,20 @@ It includes the following sections:
 - Python Virtual Environment
 	- Self-contained Python setup
 
-# 📜 Network Diagrams
+# 📜 Diagrams
 
 ![VPC Visual Diagram](vpc-visual-diagram.png)
 
 ![VPC Text Diagram](vpc-text-diagram.png)
 
-# 🔧 Process & Steps
+# 🏗️ Design Rationale
+
+The intent with this project was to recreate the prior project while utilizing boto3 and python instead
+of the bash scripting language. 
+
+That project created a VPC that resembled a professional network using the AWS free tier.
+
+# 🔧 Setup
 
 ## Prerequisites
 
